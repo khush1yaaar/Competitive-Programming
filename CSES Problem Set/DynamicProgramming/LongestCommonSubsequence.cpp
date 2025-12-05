@@ -3,8 +3,6 @@
 
 using namespace std;
 
-vector<int> lcs;
-
 int LCS(int i, int j, vector<int> &nums1, vector<int> &nums2, vector<vector<int>> &dp) {
     if(i == nums1.size() || j == nums2.size()) {
         return 0;
@@ -23,24 +21,6 @@ int LCS(int i, int j, vector<int> &nums1, vector<int> &nums2, vector<vector<int>
     }
 }
 
-// Function to reconstruct the LCS sequence from DP table
-void reconstructLCS(int i, int j, vector<int> &nums1, vector<int> &nums2, 
-                   vector<vector<int>> &dp, vector<int> &current) {
-    if(i == nums1.size() || j == nums2.size()) {
-        return;
-    }
-
-    if(nums1[i] == nums2[j]) {
-        current.push_back(nums1[i]);
-        reconstructLCS(i + 1, j + 1, nums1, nums2, dp, current);
-    } else {
-        if(i + 1 < nums1.size() && dp[i][j] == dp[i + 1][j]) {
-            reconstructLCS(i + 1, j, nums1, nums2, dp, current);
-        } else if(j + 1 < nums2.size() && dp[i][j] == dp[i][j + 1]) {
-            reconstructLCS(i, j + 1, nums1, nums2, dp, current);
-        }
-    }
-}
 
 int main() {
     ios_base::sync_with_stdio(false);
@@ -66,9 +46,27 @@ int main() {
     int result = LCS(0, 0, nums1, nums2, dp);
     cout << result << "\n";
 
+
     // Reconstruct the actual LCS sequence
     vector<int> lcsSequence;
-    reconstructLCS(0, 0, nums1, nums2, dp, lcsSequence);
+
+    int i = 0;
+    int j = 0;
+    
+    while(i < n && j < m) {
+        if(nums1[i] == nums2[j]) {
+            lcsSequence.push_back(nums1[i]);
+            i++;
+            j++;
+        }
+
+        else if(dp[i + 1][j] > dp[i][j + 1]) {
+            i++;
+        }
+        else {
+            j++;
+        }
+    }
     
     for(int num : lcsSequence) {
         cout << num << " ";
